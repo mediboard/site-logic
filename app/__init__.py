@@ -11,7 +11,7 @@ def create_app(config_class=Config):
 	app.config.from_object(config_class)
 
 	db.init_app(app)
-	migrate.init_app(app)
+	migrate.init_app(app, db)
 
 	from app.drugs import bp as drugs_bp
 	app.register_blueprint(drugs_bp)
