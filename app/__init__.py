@@ -14,6 +14,6 @@ def create_app(config_class=Config):
 	migrate.init_app(app, db)
 
 	from app.drugs import bp as drugs_bp
-	app.register_blueprint(drugs_bp)
+	app.register_blueprint(drugs_bp, url_prefix='/drugs')
 
 	return app
