@@ -1,7 +1,20 @@
-from app.drugs import bp 
+from app.drugs import bp
 from app import db
 from app.drugs.models import Drug, Effect
 from app.errors import errors
+
+from flask import jsonify
+from werkzeug.http import HTTP_STATUS_CODES
+
+
+def success_response(message):
+	payload = {'status': HTTP_STATUS_CODES.get(200, 'Unknown error')}
+	if message:
+		payload['message'] = message
+	response = jsonify(payload)
+	response.status_code = 200
+	return response
+
 
 @bp.route('/')
 def hello_world():
@@ -20,8 +33,11 @@ def get_drug_conditions(name):
 
 @bp.route('/<string:name>/effects', methods=['GET'])
 def get_drug_effects(name):
-	drugs = db.session.query(Drug).filter(Drug.name == name)
-	if not drugs:
-		return errors.bad_request('drug with name '+name+' does not exist')
-	
-	return "Hello " + name + "!"
+	drug = Drug.query.filter_by(name='Gabapentin').first()
+	if not drug:
+		return errors.bad_request('drug with name ' + name + ' does not exist')
+
+	effects = Effect.query.filter_by(drug_id=drug.id).all()
+	effects.sort(reverse=True, key=lambda x: x.no_effected)
+	return success_response(
+		{'effects': [effect.to_dict() for effect in effects]})
