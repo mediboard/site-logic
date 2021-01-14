@@ -6,6 +6,7 @@ class Drug(db.Model):
 	name = db.Column(db.String(40), index=True, unique=True)
 	interventions = db.relationship('Intervention', backref='drug', lazy='dynamic')
 	effects = db.relationship('Effect', backref='drug', lazy='dynamic')
+	
 
 class Condition(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -20,6 +21,7 @@ class Intervention(db.Model):
 	no_tested = db.Column(db.Integer)
 	drug_id = db.Column(db.Integer, db.ForeignKey('drug.id'))
 	condition_id = db.Column(db.Integer, db.ForeignKey('condition.id'))
+
 
 class Effect(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
