@@ -33,7 +33,7 @@ def get_drug_conditions(name):
 
 @bp.route('/<string:name>/effects', methods=['GET'])
 def get_drug_effects(name):
-	drug = Drug.query.filter_by(name='Gabapentin').first()
+	drug = Drug.query.filter_by(name=name).first()
 	if not drug:
 		return errors.bad_request('drug with name ' + name + ' does not exist')
 
@@ -41,3 +41,10 @@ def get_drug_effects(name):
 	effects.sort(reverse=True, key=lambda x: x.no_effected)
 	return success_response(
 		{'effects': [effect.to_dict() for effect in effects]})
+
+
+@bp.route('/top', methods=['GET'])
+def get_top_drugs():
+	drugs = Drug.query.get(100)
+	return success_response({'drugs': [drug.to_dict() for drug in drugs]})
+
