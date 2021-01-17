@@ -45,6 +45,6 @@ def get_drug_effects(name):
 
 @bp.route('/top', methods=['GET'])
 def get_top_drugs():
-	drugs = Drug.query.get(100)
+	drugs = Drug.query.all()
 	return success_response({'drugs': [drug.to_dict() for drug in drugs]})
 
