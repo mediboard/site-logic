@@ -8,5 +8,20 @@
     "username": "porter",
     "email": "porterehunley@gmail.com",
     "password": "abc123"
+  },
+  "valid_user_conditions": {
+    "username": "afflictedporter",
+    "email": "porter@afflicted.com",
+    "password": "abc123",
+    "conditions": [
+      {
+        "id": 1,
+        "name": "anxiety"
+      },
+      {
+        "id": 2,
+        "name": "depression"
+      }
+    ]
   }
 }

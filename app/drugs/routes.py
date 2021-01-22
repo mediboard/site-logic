@@ -1,6 +1,6 @@
 from app.drugs import bp
 from app import db
-from app.drugs.models import Drug, Effect, User
+from app.drugs.models import Drug, Effect, User, Condition, Affliction
 from app.errors import errors
 
 from flask import jsonify, redirect, url_for, request
@@ -53,16 +53,15 @@ def get_top_drugs():
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-
     data = request.json or {}
-    user = User.query.filter_by(username=data.get('username', ''))
+    user = User.query.filter_by(username=data.get('username', '')).first()
     if user is None or not user.check_password(data.get('password', '')):
         return errors.bad_request("username or password incorrect")
 
     login_user(user, remember=True)
-    return success_response("user logged in successfully")
+
+    return success_response({'user': user.to_dict(),
+                             'conditions': [a.to_dict() for a in user.afflictions]})
 
 
 # TODO add email validation
@@ -81,10 +80,17 @@ def register():
 
     new_user = User()
     new_user.username = data['username']  # Should already be checked by this point
-    new_user.email = data['email']
+    new_user.email = data['email']  # ditto
     new_user.set_password(data['password'])
 
     db.session.add(new_user)
+    db.session.commit()
+
+    new_user = User.query.filter_by(username=data.get('username', '')).first()  # Get it back
+
+    conditions = Condition.query.filter(Condition.id.in_([x['name'] for x in data.get('conditions', [])])).all()
+    for condition in conditions:
+        db.session.add(Affliction(user_id=new_user.id, condition_id=condition.id))
     db.session.commit()
 
     login_user(new_user)

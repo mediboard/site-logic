@@ -71,6 +71,15 @@ class Affliction(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	condition_id = db.Column(db.Integer, db.ForeignKey('condition.id'))
+	condition_name = db.Column(db.String(100))  # TODO this is asking for trouble
+
+	def to_dict(self):
+		return {
+			'id': self.id,
+			'user_id': self.user_id,
+			'condition_id': self.condition_id,
+			'condition_name': self.condition_name
+		}
 
 
 class User(UserMixin, db.Model):
@@ -85,6 +94,13 @@ class User(UserMixin, db.Model):
 
 	def check_password(self, password):
 		return check_password_hash(self.password_hash, password)
+
+	def to_dict(self):
+		return {
+			'id': self.id,
+			'username': self.username,
+			'email': self.email
+		}
 
 
 @login.user_loader
