@@ -1,10 +1,11 @@
 from app.drugs import bp
 from app import db
-from app.drugs.models import Drug, Effect
+from app.drugs.models import Drug, Effect, User
 from app.errors import errors
 
-from flask import jsonify
+from flask import jsonify, redirect, url_for
 from werkzeug.http import HTTP_STATUS_CODES
+from flask_login import current_user, login_user
 
 
 def success_response(message):
@@ -17,6 +18,7 @@ def success_response(message):
 
 
 @bp.route('/')
+@bp.route('/index')
 def hello_world():
 	return "Hello World!"
 
@@ -47,4 +49,13 @@ def get_drug_effects(name):
 def get_top_drugs():
 	drugs = Drug.query.all()
 	return success_response({'drugs': [drug.to_dict() for drug in drugs]})
+
+
+@bp.route('/login', methods=['GET', 'POST'])
+def login():
+	if current_user.is_authenticated:
+		return redirect(url_for('index'))
+
+
+
 
