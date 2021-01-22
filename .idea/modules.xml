@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$USER_HOME$/BirdseyeBackend/.idea/BirdseyeBackend.iml" filepath="$USER_HOME$/BirdseyeBackend/.idea/BirdseyeBackend.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/site-logic.iml" filepath="$PROJECT_DIR$/.idea/site-logic.iml" />
     </modules>
   </component>
