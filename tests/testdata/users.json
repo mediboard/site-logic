@@ -1,0 +1,12 @@
+{
+  "invalid_email_user": {
+    "username": "porter",
+    "email": "messedupemail",
+    "password": "abc123"
+  },
+  "valid_user": {
+    "username": "porter",
+    "email": "porterehunley@gmail.com",
+    "password": "abc123"
+  }
+}

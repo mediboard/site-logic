@@ -71,11 +71,11 @@ def login():
 @bp.route('/register', methods=['POST'])
 def register():
     data = request.json or {}
-    user = User.query.filter_by(username=data.get('username', ''))
+    user = User.query.filter_by(username=data.get('username', '')).first()
     if user is not None:
         return errors.bad_request("username already taken")
 
-    user = User.query.filter_by(email=data.get('email', ''))
+    user = User.query.filter_by(email=data.get('email', '')).first()
     if user is not None:
         return errors.bad_request("account with this email already exists")
 
@@ -87,4 +87,5 @@ def register():
     db.session.add(new_user)
     db.session.commit()
 
+    login_user(new_user)
     return success_response('user signed up')

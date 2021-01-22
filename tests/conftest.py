@@ -1,4 +1,5 @@
 import pytest
+import json
 
 from app import create_app
 from app import db
@@ -12,6 +13,14 @@ def test_client():
     ctx.push()
     yield testing_client
     ctx.pop()
+
+
+@pytest.fixture(scope='module')
+def load_users_test_data():
+    with open('testdata/users.json') as f:
+        users = json.load(f)
+        f.close()
+        return users
 
 
 @pytest.fixture(scope='module')
