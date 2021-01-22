@@ -22,6 +22,7 @@ class Condition(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(100), index=True, unique=True)
 	interventions = db.relationship('Intervention', backref='condition', lazy='dynamic')
+	afflictions = db.relationship('Affliction', backref='condition', lazy='dynamic')
 
 	def to_dict(self):
 		return {
@@ -66,11 +67,18 @@ class Effect(db.Model):
 		}
 
 
+class Affliction(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	condition_id = db.Column(db.Integer, db.ForeignKey('condition.id'))
+
+
 class User(UserMixin, db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(100), index=True, unique=True)
 	email = db.Column(db.String(100), index=True, unique=True)
 	password_hash = db.Column(db.String(128))
+	afflictions = db.relationship('Affliction', backref='user', lazy='dynamic')
 
 	def set_password(self, password):
 		self.password_hash = generate_password_hash(password)
