@@ -10,6 +10,7 @@ class Drug(db.Model):
 	brand_name = db.Column(db.String(40))
 	interventions = db.relationship('Intervention', backref='drug', lazy='dynamic')
 	effects = db.relationship('Effect', backref='drug', lazy='dynamic')
+	tags = db.relationship('Tag', backref='drug', lazy='dynamic')
 
 	def to_dict(self):
 		return {
@@ -23,6 +24,7 @@ class Condition(db.Model):
 	name = db.Column(db.String(100), index=True, unique=True)
 	interventions = db.relationship('Intervention', backref='condition', lazy='dynamic')
 	afflictions = db.relationship('Affliction', backref='condition', lazy='dynamic')
+	tags = db.relationship('Tag', backref='condition', lazy='dynamic')
 
 	def to_dict(self):
 		return {
@@ -106,4 +108,31 @@ class User(UserMixin, db.Model):
 @login.user_loader
 def load_user(id):
 	return User.query.get(int(id))
+
+
+class Comment(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	body = db.Column(db.String(2000))
+	likes = db.Column(db.Integer)
+	timestamp = db.Column(db.DateTime)
+	post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+
+class Tag(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	condition_id = db.Column(db.Integer, db.ForeignKey('condition.id'))
+	drug_id = db.Column(db.Integer, db.ForeignKey('drug.id'))
+	post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+
+
+class Post(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(100), index=True)
+	body = db.Column(db.String(6000))  # This might be a little too low
+	likes = db.Column(db.Integer)
+	category = db.Column(db.String(50), index=True)
+	tags = db.relationship('Tag', backref='post', lazy='dynamic')
+	comments = db.relationship('Comment', backref='post', lazy='dynamic')
+
 

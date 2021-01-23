@@ -3,9 +3,9 @@ from app import db
 from app.drugs.models import Drug, Effect, User, Condition, Affliction
 from app.errors import errors
 
-from flask import jsonify, redirect, url_for, request
+from flask import jsonify, request
 from werkzeug.http import HTTP_STATUS_CODES
-from flask_login import current_user, login_user
+from flask_login import login_user
 
 
 def success_response(message):
