@@ -1,6 +1,6 @@
 from app.drugs import bp
 from app import db
-from app.drugs.models import Drug, Effect, User, Condition, Affliction
+from app.models import Drug, Effect, User, Condition, Affliction
 from app.errors import errors
 
 from flask import jsonify, request
@@ -95,3 +95,4 @@ def register():
 
     login_user(new_user)
     return success_response('user signed up')
+

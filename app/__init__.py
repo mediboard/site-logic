@@ -13,10 +13,13 @@ def create_app(config_file=None):
 	app.config.from_pyfile(config_file)
 
 	db.init_app(app)
-	migrate.init_app(app, db)
+	migrate.init_app(app, db, render_as_batch=True)
 	login.init_app(app)
 
 	from app.drugs import bp as drugs_bp
 	app.register_blueprint(drugs_bp, url_prefix='/drugs')
+
+	from app.board import bp as board_bp
+	app.register_blueprint(board_bp, url_prefix='/board')
 
 	return app

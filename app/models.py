@@ -118,12 +118,34 @@ class Comment(db.Model):
 	post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+	def to_dict(self):
+		return {
+			'id': self.id,
+			'body': self.body,
+			'likes': self.likes,
+			'timestamp': self.timestamp,
+			'post_id': self.post_id,
+			'user_id': self.user_id
+		}
+
 
 class Tag(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	condition_id = db.Column(db.Integer, db.ForeignKey('condition.id'))
+	condition_name = db.Column(db.String(100))
 	drug_id = db.Column(db.Integer, db.ForeignKey('drug.id'))
+	drug_name = db.Column(db.String(100))
 	post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+
+	def to_dict(self):
+		return {
+			'id': self.id,
+			'condition_id': self.condition_id,
+			'condition_name': self.condition_name,
+			'drug_id': self.drug_id,
+			'drug_name': self.drug_name,
+			'post_id': self.post_id
+		}
 
 
 class Post(db.Model):
@@ -134,5 +156,17 @@ class Post(db.Model):
 	category = db.Column(db.String(50), index=True)
 	tags = db.relationship('Tag', backref='post', lazy='dynamic')
 	comments = db.relationship('Comment', backref='post', lazy='dynamic')
+
+	def to_dict(self):
+		return {
+			'id': self.id,
+			'title': self.title,
+			'body': self.body,
+			'likes': self.likes,
+			'category': self.category,
+			'tags': [],
+			'comments': []
+		}
+
 
 
