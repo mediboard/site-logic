@@ -90,6 +90,8 @@ class User(UserMixin, db.Model):
 	email = db.Column(db.String(100), index=True, unique=True)
 	password_hash = db.Column(db.String(128))
 	afflictions = db.relationship('Affliction', backref='user', lazy='dynamic')
+	comments = db.relationship('Comment', backref='commenter', lazy='dynamic')
+	posts = db.relationship('Post', backref='poster', lazy='dynamic')
 
 	def set_password(self, password):
 		self.password_hash = generate_password_hash(password)
@@ -101,7 +103,8 @@ class User(UserMixin, db.Model):
 		return {
 			'id': self.id,
 			'username': self.username,
-			'email': self.email
+			'email': self.email,
+			'afflictions': []
 		}
 
 
@@ -132,18 +135,16 @@ class Comment(db.Model):
 class Tag(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	condition_id = db.Column(db.Integer, db.ForeignKey('condition.id'))
-	condition_name = db.Column(db.String(100))
 	drug_id = db.Column(db.Integer, db.ForeignKey('drug.id'))
-	drug_name = db.Column(db.String(100))
+	name = db.Column(db.String(100))
 	post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
 
 	def to_dict(self):
 		return {
 			'id': self.id,
 			'condition_id': self.condition_id,
-			'condition_name': self.condition_name,
 			'drug_id': self.drug_id,
-			'drug_name': self.drug_name,
+			'name': self.name,
 			'post_id': self.post_id
 		}
 
@@ -154,6 +155,9 @@ class Post(db.Model):
 	body = db.Column(db.String(6000))  # This might be a little too low
 	likes = db.Column(db.Integer)
 	category = db.Column(db.String(50), index=True)
+	timestamp = db.Column(db.DateTime)
+	no_comments = db.Column(db.Integer)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	tags = db.relationship('Tag', backref='post', lazy='dynamic')
 	comments = db.relationship('Comment', backref='post', lazy='dynamic')
 
@@ -164,9 +168,8 @@ class Post(db.Model):
 			'body': self.body,
 			'likes': self.likes,
 			'category': self.category,
+			'user_id': self.user_id,
+			'poster': {},
 			'tags': [],
-			'comments': []
+			'comments': [],
 		}
-
-
-

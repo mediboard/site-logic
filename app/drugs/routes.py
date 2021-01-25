@@ -6,6 +6,7 @@ from app.errors import errors
 from flask import jsonify, request
 from werkzeug.http import HTTP_STATUS_CODES
 from flask_login import login_user
+from sqlalchemy import or_
 
 
 def success_response(message):
@@ -15,6 +16,14 @@ def success_response(message):
     response = jsonify(payload)
     response.status_code = 200
     return response
+
+
+def get_drug_if_exists(drug_name):
+    return Drug.query.filter_by(or_(Drug.name == drug_name, Drug.brand_name == drug_name)).first()
+
+
+def get_condition_if_exists(condition_name):
+    return Condition.query.filter_by(name=condition_name).first()
 
 
 @bp.route('/')
@@ -85,8 +94,6 @@ def register():
 
     db.session.add(new_user)
     db.session.commit()
-
-    new_user = User.query.filter_by(username=data.get('username', '')).first()  # Get it back
 
     conditions = Condition.query.filter(Condition.id.in_([x['name'] for x in data.get('conditions', [])])).all()
     for condition in conditions:
