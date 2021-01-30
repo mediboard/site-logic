@@ -1,0 +1,32 @@
+{
+  "posts": [
+    {
+      "post": {
+        "title": "Hello world gen",
+        "body": "Hello world gen",
+        "likes": 69,
+        "category": "woman's health",
+        "timestamp": 1611670261,
+        "no_comments": 420,
+        "user_id": 10
+      },
+      "tags": []
+    },
+    {
+      "post": {
+        "title": "Hello world",
+        "body": "Hello world",
+        "likes": 10,
+        "category": "woman's health",
+        "timestamp": 1611670267,
+        "no_comments": 4,
+        "user_id": 10
+      },
+      "tags": [
+        {
+          "name": "Gabapentin"
+        }
+      ]
+    }
+  ]
+}

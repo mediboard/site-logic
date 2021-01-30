@@ -6,6 +6,7 @@ from app.drugs.routes import get_condition_if_exists, get_drug_if_exists
 from flask import jsonify, request
 from flask_login import login_user
 from werkzeug.http import HTTP_STATUS_CODES
+from datetime import datetime
 
 
 def success_response(message):
@@ -25,8 +26,8 @@ def create_posts_response(posts):
         print(post.__dict__)
 
         post_dict = post.to_dict()
-        post_dict['tags'].append((tag.to_dict() for tag in tags))
-        post_dict['comments'].append((comment.to_dict() for comment in comments))
+        post_dict['tags'] += [tag.to_dict() for tag in tags]
+        post_dict['comments'] += [comment.to_dict() for comment in comments]
         posts_response.append(post_dict)
 
     return posts_response
@@ -67,6 +68,7 @@ def create_post():
 
     tags = data.get('tags', [])
     new_post = Post(**data['post'])
+    new_post.timestamp = datetime.utcfromtimestamp(new_post.timestamp)
     db.session.add(new_post)
     db.session.commit()
 

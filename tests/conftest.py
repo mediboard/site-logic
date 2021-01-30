@@ -3,6 +3,7 @@ import json
 
 from app import create_app
 from app import db
+from app.models import Drug, User
 
 
 @pytest.fixture(scope='module')
@@ -26,7 +27,24 @@ def load_users_test_data():
 @pytest.fixture(scope='module')
 def init_database():
     db.create_all()
+    db.session.add(Drug(name='Gabapentin', brand_name='Neurontin'))
+
+    db_user = User()
+    db_user.id = 10
+    db_user.username = 'username'
+    db_user.email = 'username@me.com'
+    db_user.set_password('password')
+    db.session.add(db_user)
+    db.session.commit()
 
     yield db
 
     db.drop_all()
+
+
+@pytest.fixture(scope='module')
+def load_posts_test_data():
+    with open('testdata/posts.json') as f:
+        posts = json.load(f)
+        f.close()
+        return posts

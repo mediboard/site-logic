@@ -32,6 +32,3 @@ def test_valid_user_login(test_client, init_database, load_users_test_data):
     response = test_client.post('/drugs/login', data=json.dumps(request), headers={'Content-Type': 'application/json'})
 
     assert response.status_code == 200
-
-
-
