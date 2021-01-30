@@ -19,7 +19,7 @@ def success_response(message):
 
 
 def get_drug_if_exists(drug_name):
-    return Drug.query.filter_by(or_(Drug.name == drug_name, Drug.brand_name == drug_name)).first()
+    return Drug.query.filter(or_(Drug.name == drug_name, Drug.brand_name == drug_name)).first()
 
 
 def get_condition_if_exists(condition_name):

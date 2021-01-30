@@ -48,3 +48,11 @@ def load_posts_test_data():
         posts = json.load(f)
         f.close()
         return posts
+
+
+@pytest.fixture(scope='model')
+def load_comments_test_data():
+    with open('testdata/comments.json') as f:
+        comments = json.load(f)
+        f.close()
+        return comments

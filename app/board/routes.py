@@ -10,11 +10,20 @@ from datetime import datetime
 
 
 def success_response(message):
-    payload = {'status': HTTP_STATUS_CODES.get(200, 'Unknown error')}
+    payload = {'status': HTTP_STATUS_CODES.get(200, 'success')}
     if message:
         payload['message'] = message
     response = jsonify(payload)
     response.status_code = 200
+    return response
+
+
+def bad_request(message):
+    payload = {'status': HTTP_STATUS_CODES.get(400, 'bad request')}
+    if message:
+        payload['message'] = message
+    response = jsonify(payload)
+    response.status_code = 400
     return response
 
 
@@ -87,3 +96,28 @@ def create_post():
 
     db.session.commit()
     return success_response({'post': create_posts_response([new_post])})
+
+
+@bp.route('/comments', methods=['POST'])
+def add_comment():
+    data = request.json() or {}
+
+    if not all([k in data for k in ['body', 'likes', 'timestamp', 'post_id', 'user_id']]):
+        return bad_request('missing fields in comments')
+
+    new_comment = Comment(**data)
+    db.session.add(new_comment)
+    db.session.commit()
+
+    return success_response({'comment': new_comment.to_dict()})
+
+
+@bp.route('/comments', methods=['GET'])
+def get_comments():
+    query_tags = ['user_id', 'body', 'likes', 'timestamp', 'post_id', 'user_id']
+
+    query_string = {k: request.args.get(k, None) for k in query_tags if request.args.get(k, None)}
+    comments = Comment.query.filter_by(**query_string).all()
+
+    return success_response({'comments': [comment.to_dict() for comment in comments]})
+
